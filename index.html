@@ -50,19 +50,20 @@
                     <optgroup label="-- Správa Objektu --">
                         <option value="admin">👨‍💼 SPRÁVCE / MAJITEL (ADMIN)</option>
                     </optgroup>
-                    <optgroup label="-- Jednolůžkové Pokoje (1 student) --">
-                        <option value="student_1">Pokoj #11 — Klára Novotná</option>
-                        <option value="student_2">Pokoj #12 — Tomáš Dvořák</option>
-                        <option value="student_3">Pokoj #15 — Eliška Kučerová</option>
-                        <option value="student_4">Pokoj #16 — David Černý</option>
-                        <option value="student_5">Pokoj #17 — Adéla Veselá</option>
-                        <option value="student_6">Pokoj #18 — Filip Horák</option>
-                    </optgroup>
-                    <optgroup label="-- Dvoulůžkové Pokoje (2 studenti) --">
+                    <optgroup label="-- Pokoje #11, #23, #24 (2 studenti / A & B) --">
+                        <option value="student_1">Pokoj #11 (A) — Klára Novotná</option>
+                        <option value="student_2">Pokoj #11 (B) — [Volno]</option>
                         <option value="student_7">Pokoj #23 (A) — Jan Novák</option>
                         <option value="student_8">Pokoj #23 (B) — Jakub Král</option>
                         <option value="student_9">Pokoj #24 (A) — Martin Procházka</option>
                         <option value="student_10">Pokoj #24 (B) — Tereza Svobodová</option>
+                    </optgroup>
+                    <optgroup label="-- Jednolůžkové Pokoje (#12, #15, #16, #17, #18) --">
+                        <option value="student_3">Pokoj #12 — Tomáš Dvořák</option>
+                        <option value="student_4">Pokoj #15 — Eliška Kučerová</option>
+                        <option value="student_5">Pokoj #16 — David Černý</option>
+                        <option value="student_6">Pokoj #17 — Adéla Veselá</option>
+                        <option value="student_11">Pokoj #18 — Filip Horák</option>
                     </optgroup>
                 </select>
             </div>
@@ -203,18 +204,18 @@
             <div>
                 <span class="text-xs text-brand-400 font-bold uppercase tracking-wider block">Správa Nemovitosti</span>
                 <h1 class="text-2xl font-black">Student Living Modřice — Administrace</h1>
-                <p class="text-xs text-slate-400">nám. Svobody 79 • Pokoje: 11, 12, 15, 16, 17, 18 (Single) & 23, 24 (Shared)</p>
+                <p class="text-xs text-slate-400">nám. Svobody 79 • Pokoje: #11, #23, #24 (Shared) & #12, #15, #16, #17, #18 (Single)</p>
             </div>
             <button onclick="openAddStudentModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-4 py-2 rounded-xl text-xs transition flex items-center space-x-2">
-                <i class="fa-solid fa-user-plus"></i> <span>Přidat / Upravit Studenta</span>
+                <i class="fa-solid fa-user-plus"></i> <span>Přidat / Obsadit Pozici</span>
             </button>
         </div>
 
         <!-- Přehledové Karty -->
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Obsazenost</span>
-                <div class="text-xl font-black text-slate-900" id="statOccupancy">10 / 10 studentů</div>
+                <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Obsazenost pozic</span>
+                <div class="text-xl font-black text-slate-900" id="statOccupancy">10 / 11 pozic</div>
             </div>
             <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
                 <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Vybrané Kauce</span>
@@ -235,7 +236,7 @@
             <div class="flex justify-between items-center">
                 <h2 class="font-bold text-slate-900 text-base flex items-center space-x-2">
                     <i class="fa-solid fa-users text-brand-600"></i>
-                    <span>Seznam Ubytovaných Studentů & Nacionále</span>
+                    <span>Seznam Ubytovaných Studentů & Pozice v Pokoje</span>
                 </h2>
                 <span class="text-xs text-slate-500 font-semibold">Aktivní správa</span>
             </div>
@@ -244,7 +245,7 @@
                 <table class="w-full text-left text-xs text-slate-600">
                     <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
                         <tr>
-                            <th class="p-3">Pokoj</th>
+                            <th class="p-3">Pokoj / Pozice</th>
                             <th class="p-3">Jméno a Příjmení</th>
                             <th class="p-3">Kontakt (Telefon / Email)</th>
                             <th class="p-3">Rodné číslo / OP</th>
@@ -260,7 +261,7 @@
             </div>
         </section>
 
-        <!-- MODÁLNÍ OKNO PRO ZADÁNÍ / ÚPRAVU STUDENTA -->
+        <!-- MODÁLNÍ OKNO PRO ZADÁNÍ / ÚPRAVU / VYMAZÁNÍ STUDENTA -->
         <div id="studentModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
             <div class="bg-white rounded-2xl max-w-lg w-full p-6 space-y-4 shadow-2xl">
                 <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -272,9 +273,10 @@
                     <input type="hidden" id="editStudentId">
                     <div class="grid grid-cols-2 gap-3">
                         <div>
-                            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Číslo Pokoje</label>
+                            <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Číslo Pokoje / Pozice</label>
                             <select id="formRoom" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
-                                <option value="Pokoj #11 (Single)">Pokoj #11 (Single)</option>
+                                <option value="Pokoj #11 (Shared - A)">Pokoj #11 (Shared - A)</option>
+                                <option value="Pokoj #11 (Shared - B)">Pokoj #11 (Shared - B)</option>
                                 <option value="Pokoj #12 (Single)">Pokoj #12 (Single)</option>
                                 <option value="Pokoj #15 (Single)">Pokoj #15 (Single)</option>
                                 <option value="Pokoj #16 (Single)">Pokoj #16 (Single)</option>
@@ -288,40 +290,46 @@
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Jméno a Příjmení</label>
-                            <input type="text" id="formName" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                            <input type="text" id="formName" placeholder="Nechte prázdné pro volný pokoj" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Telefonní číslo</label>
-                            <input type="text" id="formPhone" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                            <input type="text" id="formPhone" placeholder="+420..." class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">E-mail</label>
-                            <input type="email" id="formEmail" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                            <input type="email" id="formEmail" placeholder="email@email.cz" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
                         </div>
                     </div>
 
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Rodné číslo / OP</label>
-                            <input type="text" id="formIdNum" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                            <input type="text" id="formIdNum" placeholder="000000/0000" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
                         </div>
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">VŠ / Fakulta</label>
-                            <input type="text" id="formSchool" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                            <input type="text" id="formSchool" placeholder="Univerzita" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
                         </div>
                     </div>
 
                     <div>
                         <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Vratná Kauce (Kč)</label>
-                        <input type="number" id="formDeposit" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                        <input type="number" id="formDeposit" value="15000" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
                     </div>
 
-                    <div class="pt-2 flex justify-end space-x-2">
-                        <button type="button" onclick="closeStudentModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs">Zrušit</button>
-                        <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-lg text-xs">Uložit nacionále</button>
+                    <div class="pt-2 flex justify-between items-center">
+                        <!-- Tlačítko pro vymazání/uvolnění studenta ze slotu -->
+                        <button type="button" onclick="deleteStudentData()" class="bg-rose-600 hover:bg-rose-700 text-white font-bold px-3 py-2 rounded-lg text-xs transition flex items-center space-x-1">
+                            <i class="fa-solid fa-trash"></i> <span>Vymazat studenta</span>
+                        </button>
+                        <div class="flex space-x-2">
+                            <button type="button" onclick="closeStudentModal()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-4 py-2 rounded-lg text-xs">Zrušit</button>
+                            <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold px-4 py-2 rounded-lg text-xs">Uložit nacionále</button>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -331,45 +339,60 @@
 
     <!-- JAVASCRIPT DATABÁZE A LOGIKA -->
     <script>
-        // Databáze 10 studentů podle zadaných čísel pokojů
+        // Databáze pevných pozic pokojů (včetně pokoje #11 jako Shared A/B, #12, #15, #16, #17, #18 jako Single, #23 a #24 jako Shared A/B)
         let students = [
-            { id: 1, room: "Pokoj #11 (Single)", name: "Klára Novotná", phone: "+420 773 111 222", email: "klara.n@email.cz", idNum: "025412/1234", school: "MUNI Právnická", deposit: 15000 },
-            { id: 2, room: "Pokoj #12 (Single)", name: "Tomáš Dvořák", phone: "+420 774 222 333", email: "tomas.d@email.cz", idNum: "010315/2345", school: "VUT Lékařská", deposit: 15000 },
-            { id: 3, room: "Pokoj #15 (Single)", name: "Eliška Kučerová", phone: "+420 775 333 444", email: "eliska.k@email.cz", idNum: "035108/3456", school: "MUNI Filozofická", deposit: 15000 },
-            { id: 4, room: "Pokoj #16 (Single)", name: "David Černý", phone: "+420 776 444 555", email: "david.c@email.cz", idNum: "000822/4567", school: "VUT FIT", deposit: 15000 },
-            { id: 5, room: "Pokoj #17 (Single)", name: "Adéla Veselá", phone: "+420 777 555 666", email: "adela.v@email.cz", idNum: "025919/5678", school: "MENDELU", deposit: 15000 },
-            { id: 6, room: "Pokoj #18 (Single)", name: "Filip Horák", phone: "+420 778 666 777", email: "filip.h@email.cz", idNum: "011105/6789", school: "VUT FEKT", deposit: 15000 },
-            { id: 7, room: "Pokoj #23 (Shared - A)", name: "Jan Novák", phone: "+420 779 777 888", email: "jan.novak@email.cz", idNum: "020101/7890", school: "VUT Strojní", deposit: 15000 },
-            { id: 8, room: "Pokoj #23 (Shared - B)", name: "Jakub Král", phone: "+420 770 888 999", email: "jakub.kral@email.cz", idNum: "010512/8901", school: "MUNI ESF", deposit: 15000 },
-            { id: 9, room: "Pokoj #24 (Shared - A)", name: "Martin Procházka", phone: "+420 771 999 000", email: "martin.p@email.cz", idNum: "020814/9012", school: "VUT Podnikatelská", deposit: 15000 },
-            { id: 10, room: "Pokoj #24 (Shared - B)", name: "Tereza Svobodová", phone: "+420 772 000 111", email: "tereza.s@email.cz", idNum: "035330/0123", school: "MUNI Pedagogická", deposit: 15000 }
+            { id: 1, room: "Pokoj #11 (Shared - A)", name: "Klára Novotná", phone: "+420 773 111 222", email: "klara.n@email.cz", idNum: "025412/1234", school: "MUNI Právnická", deposit: 15000 },
+            { id: 2, room: "Pokoj #11 (Shared - B)", name: "", phone: "", email: "", idNum: "", school: "", deposit: 0 },
+            { id: 3, room: "Pokoj #12 (Single)", name: "Tomáš Dvořák", phone: "+420 774 222 333", email: "tomas.d@email.cz", idNum: "010315/2345", school: "VUT Lékařská", deposit: 15000 },
+            { id: 4, room: "Pokoj #15 (Single)", name: "Eliška Kučerová", phone: "+420 775 333 444", email: "eliska.k@email.cz", idNum: "035108/3456", school: "MUNI Filozofická", deposit: 15000 },
+            { id: 5, room: "Pokoj #16 (Single)", name: "David Černý", phone: "+420 776 444 555", email: "david.c@email.cz", idNum: "000822/4567", school: "VUT FIT", deposit: 15000 },
+            { id: 6, room: "Pokoj #17 (Single)", name: "Adéla Veselá", phone: "+420 777 555 666", email: "adela.v@email.cz", idNum: "025919/5678", school: "MENDELU", deposit: 15000 },
+            { id: 7, room: "Pokoj #18 (Single)", name: "Filip Horák", phone: "+420 778 666 777", email: "filip.h@email.cz", idNum: "011105/6789", school: "VUT FEKT", deposit: 15000 },
+            { id: 8, room: "Pokoj #23 (Shared - A)", name: "Jan Novák", phone: "+420 779 777 888", email: "jan.novak@email.cz", idNum: "020101/7890", school: "VUT Strojní", deposit: 15000 },
+            { id: 9, room: "Pokoj #23 (Shared - B)", name: "Jakub Král", phone: "+420 770 888 999", email: "jakub.kral@email.cz", idNum: "010512/8901", school: "MUNI ESF", deposit: 15000 },
+            { id: 10, room: "Pokoj #24 (Shared - A)", name: "Martin Procházka", phone: "+420 771 999 000", email: "martin.p@email.cz", idNum: "020814/9012", school: "VUT Podnikatelská", deposit: 15000 },
+            { id: 11, room: "Pokoj #24 (Shared - B)", name: "Tereza Svobodová", phone: "+420 772 000 111", email: "tereza.s@email.cz", idNum: "035330/0123", school: "MUNI Pedagogická", deposit: 15000 }
         ];
 
         function renderAdminTable() {
             const tbody = document.getElementById('studentTableBody');
             tbody.innerHTML = '';
 
+            let occupiedCount = 0;
+            let totalDeposits = 0;
+
             students.forEach(s => {
+                const isEmpty = !s.name || s.name.trim() === "";
+                if (!isEmpty) {
+                    occupiedCount++;
+                    totalDeposits += (s.deposit || 0);
+                }
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
                     <td class="p-3 font-bold text-slate-900">${s.room}</td>
-                    <td class="p-3 font-bold text-brand-600">${s.name}</td>
-                    <td class="p-3">
-                        <div class="font-medium text-slate-800">${s.phone}</div>
-                        <div class="text-[10px] text-slate-400">${s.email}</div>
+                    <td class="p-3 font-bold ${isEmpty ? 'text-slate-400 italic' : 'text-brand-600'}">
+                        ${isEmpty ? '[ Volné / Neobsazeno ]' : s.name}
                     </td>
-                    <td class="p-3 font-mono text-[11px]">${s.idNum}</td>
-                    <td class="p-3">${s.school}</td>
-                    <td class="p-3 font-bold text-emerald-600">${s.deposit.toLocaleString('cs-CZ')} Kč</td>
+                    <td class="p-3">
+                        ${isEmpty ? '-' : `<div class="font-medium text-slate-800">${s.phone}</div><div class="text-[10px] text-slate-400">${s.email}</div>`}
+                    </td>
+                    <td class="p-3 font-mono text-[11px]">${isEmpty ? '-' : s.idNum}</td>
+                    <td class="p-3">${isEmpty ? '-' : s.school}</td>
+                    <td class="p-3 font-bold text-emerald-600">${isEmpty ? '0 Kč' : s.deposit.toLocaleString('cs-CZ') + ' Kč'}</td>
                     <td class="p-3 text-right">
-                        <button onclick="editStudent(${s.id})" class="bg-slate-100 hover:bg-brand-600 hover:text-white text-slate-700 font-bold px-2 py-1 rounded transition text-[11px]">
-                            <i class="fa-solid fa-pen"></i> Upravit
+                        <button onclick="editStudent(${s.id})" class="bg-slate-100 hover:bg-brand-600 hover:text-white text-slate-700 font-bold px-2.5 py-1 rounded transition text-[11px]">
+                            <i class="fa-solid fa-pen"></i> ${isEmpty ? 'Obsadit' : 'Upravit'}
                         </button>
                     </td>
                 `;
                 tbody.appendChild(tr);
             });
+
+            // Aktualizace přehledových karet
+            document.getElementById('statOccupancy').textContent = `${occupiedCount} / ${students.length} pozic`;
+            document.getElementById('statDeposits').textContent = `${totalDeposits.toLocaleString('cs-CZ')} Kč`;
         }
 
         function changeUserRole(roleKey) {
@@ -388,9 +411,9 @@
                 const s = students[studentIndex];
 
                 if (s) {
-                    document.getElementById('tenantNameHeader').textContent = s.name;
-                    document.getElementById('tenantRoomHeader').textContent = `${s.room} • ${s.school}`;
-                    document.getElementById('tenantDepositText').textContent = `${s.deposit.toLocaleString('cs-CZ')} Kč`;
+                    document.getElementById('tenantNameHeader').textContent = s.name ? s.name : "[Volná pozice]";
+                    document.getElementById('tenantRoomHeader').textContent = `${s.room} • ${s.school || 'Bez přiřazení'}`;
+                    document.getElementById('tenantDepositText').textContent = `${(s.deposit || 0).toLocaleString('cs-CZ')} Kč`;
                 }
             }
         }
@@ -401,18 +424,19 @@
 
             document.getElementById('editStudentId').value = s.id;
             document.getElementById('formRoom').value = s.room;
-            document.getElementById('formName').value = s.name;
-            document.getElementById('formPhone').value = s.phone;
-            document.getElementById('formEmail').value = s.email;
-            document.getElementById('formIdNum').value = s.idNum;
-            document.getElementById('formSchool').value = s.school;
-            document.getElementById('formDeposit').value = s.deposit;
+            document.getElementById('formName').value = s.name || '';
+            document.getElementById('formPhone').value = s.phone || '';
+            document.getElementById('formEmail').value = s.email || '';
+            document.getElementById('formIdNum').value = s.idNum || '';
+            document.getElementById('formSchool').value = s.school || '';
+            document.getElementById('formDeposit').value = s.deposit || 15000;
 
-            document.getElementById('modalTitle').textContent = `Úprava nacionálů: ${s.name}`;
+            document.getElementById('modalTitle').textContent = s.name ? `Úprava nacionálů: ${s.name}` : `Obsadit pozici: ${s.room}`;
             document.getElementById('studentModal').classList.remove('hidden');
         }
 
         function openAddStudentModal() {
+            // Najde první volnou pozici nebo vytvoří novou
             document.getElementById('editStudentId').value = '';
             document.getElementById('formName').value = '';
             document.getElementById('formPhone').value = '';
@@ -420,12 +444,35 @@
             document.getElementById('formIdNum').value = '';
             document.getElementById('formSchool').value = '';
             document.getElementById('formDeposit').value = 15000;
-            document.getElementById('modalTitle').textContent = "Přidat Nového Studenta";
+            document.getElementById('modalTitle').textContent = "Přidat / Obsadit Pozici Studenta";
             document.getElementById('studentModal').classList.remove('hidden');
         }
 
         function closeStudentModal() {
             document.getElementById('studentModal').classList.add('hidden');
+        }
+
+        // Funkce pro vymazání/uvolnění studenta ze slotu (pozice zůstane zachovaná)
+        function deleteStudentData() {
+            const id = document.getElementById('editStudentId').value;
+            if (!id) {
+                closeStudentModal();
+                return;
+            }
+
+            if (confirm("Opravdu chcete tohoto studenta vymazat? Pozice v pokoji zůstane volná.")) {
+                const s = students.find(item => item.id === parseInt(id));
+                if (s) {
+                    s.name = "";
+                    s.phone = "";
+                    s.email = "";
+                    s.idNum = "";
+                    s.school = "";
+                    s.deposit = 0;
+                }
+                closeStudentModal();
+                renderAdminTable();
+            }
         }
 
         function saveStudentForm(e) {
@@ -437,12 +484,12 @@
             const email = document.getElementById('formEmail').value;
             const idNum = document.getElementById('formIdNum').value;
             const school = document.getElementById('formSchool').value;
-            const deposit = parseInt(document.getElementById('formDeposit').value);
+            const deposit = parseInt(document.getElementById('formDeposit').value) || 0;
 
             if (id) {
                 const s = students.find(item => item.id === parseInt(id));
                 if (s) {
-                    s.name = name; s.room = room; s.phone = phone;
+                    s.room = room; s.name = name; s.phone = phone;
                     s.email = email; s.idNum = idNum; s.school = school; s.deposit = deposit;
                 }
             } else {
