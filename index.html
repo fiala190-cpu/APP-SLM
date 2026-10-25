@@ -50,20 +50,8 @@
                     <optgroup label="-- Správa Objektu --">
                         <option value="admin">👨‍💼 SPRÁVCE / MAJITEL (ADMIN)</option>
                     </optgroup>
-                    <optgroup label="-- Pokoje #11, #23, #24 (2 studenti / A & B) --">
-                        <option value="student_1">Pokoj #11 (A) — Klára Novotná</option>
-                        <option value="student_2">Pokoj #11 (B) — [Volno]</option>
-                        <option value="student_7">Pokoj #23 (A) — Jan Novák</option>
-                        <option value="student_8">Pokoj #23 (B) — Jakub Král</option>
-                        <option value="student_9">Pokoj #24 (A) — Martin Procházka</option>
-                        <option value="student_10">Pokoj #24 (B) — Tereza Svobodová</option>
-                    </optgroup>
-                    <optgroup label="-- Jednolůžkové Pokoje (#12, #15, #16, #17, #18) --">
-                        <option value="student_3">Pokoj #12 — Tomáš Dvořák</option>
-                        <option value="student_4">Pokoj #15 — Eliška Kučerová</option>
-                        <option value="student_5">Pokoj #16 — David Černý</option>
-                        <option value="student_6">Pokoj #17 — Adéla Veselá</option>
-                        <option value="student_11">Pokoj #18 — Filip Horák</option>
+                    <optgroup label="-- Nájemníci --">
+                        <!-- Dynamicky generované možnosti v JS podle aktuálních studentů -->
                     </optgroup>
                 </select>
             </div>
@@ -77,7 +65,7 @@
             <div>
                 <span class="text-[10px] text-brand-200 font-bold uppercase tracking-wider block">Přihlášený student</span>
                 <h1 id="tenantNameHeader" class="text-lg font-black">Jan Novák</h1>
-                <p id="tenantRoomHeader" class="text-xs text-slate-300">Pokoj #23 (Dvoulůžkový pokoj) • VŠT&J Brno</p>
+                <p id="tenantRoomHeader" class="text-xs text-slate-300">Pokoj #23 • VŠT&J Brno</p>
             </div>
             <span class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-bold px-3 py-0.5 rounded-full">Aktivní Nájemník</span>
         </div>
@@ -229,7 +217,7 @@
 
     </main>
 
-    <!-- SPODNÍ MOBILNÍ NAVIGAČNÍ LIŠTA (APP BAR) -->
+    <!-- SPODNÍ MOBILNÍ NAVIGAČNÍ LIŠTA PRO NÁJEMNÍKA -->
     <nav id="mobileNavBar" class="hidden sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-40 px-2 py-1.5 flex justify-around items-center shadow-lg">
         <button onclick="switchTab('guests')" id="nav-guests" class="flex flex-col items-center justify-center py-1 px-3 text-brand-600 font-bold transition">
             <i class="fa-solid fa-bed text-base mb-0.5"></i>
@@ -257,62 +245,102 @@
             <div>
                 <span class="text-xs text-brand-400 font-bold uppercase tracking-wider block">Správa Nemovitosti</span>
                 <h1 class="text-2xl font-black">Student Living Modřice — Administrace</h1>
-                <p class="text-xs text-slate-400">nám. Svobody 79 • Pokoje: #11, #23, #24 (Shared) & #12, #15, #16, #17, #18 (Single)</p>
+                <p class="text-xs text-slate-400">nám. Svobody 79 • Pokoje: #11, #12, #15, #16, #17, #18 (Single zamčené) & #23, #24 (Shared)</p>
             </div>
             <button onclick="openAddStudentModal()" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-4 py-2.5 rounded-xl text-xs transition flex items-center space-x-2 shadow-md">
                 <i class="fa-solid fa-user-plus"></i> <span>Přidat / Obsadit Pozici</span>
             </button>
         </div>
 
-        <!-- Přehledové Karty -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Obsazenost pozic</span>
-                <div class="text-xl font-black text-slate-900" id="statOccupancy">10 / 11 pozic</div>
+        <!-- ADMIN LIŠTA PŘEPÍNÁNÍ SEKCÍ (7) -->
+        <div class="bg-white p-2 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-2">
+            <button onclick="switchAdminTab('overview')" id="admin-nav-overview" class="admin-tab-btn flex-1 bg-brand-600 text-white font-bold py-2.5 px-4 rounded-xl text-xs transition shadow-sm">
+                <i class="fa-solid fa-chart-pie mr-1.5"></i> Přehled objektu
+            </button>
+            <button onclick="switchAdminTab("tenants")" id="admin-nav-tenants" class="admin-tab-btn flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition">
+                <i class="fa-solid fa-users mr-1.5"></i> Seznam nájemníků
+            </button>
+            <button onclick="switchAdminTab('finance')" id="admin-nav-finance" class="admin-tab-btn flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2.5 px-4 rounded-xl text-xs transition">
+                <i class="fa-solid fa-wallet mr-1.5"></i> Kauce & Platby
+            </button>
+        </div>
+
+        <!-- SEKCE 1: Přehled objektu -->
+        <div id="admin-section-overview" class="admin-section space-y-6">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Obsazenost pozic</span>
+                    <div class="text-xl font-black text-slate-900" id="statOccupancy">10 / 11 pozic</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Vybrané Kauce</span>
+                    <div class="text-xl font-black text-emerald-600" id="statDeposits">150 000 Kč</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Single Pokoje</span>
+                    <div class="text-xl font-black text-brand-600">12 900 Kč/os./měs.</div>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Shared Pokoje</span>
+                    <div class="text-xl font-black text-brand-600">8 900 Kč/os./měs.</div>
+                </div>
             </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Vybrané Kauce</span>
-                <div class="text-xl font-black text-emerald-600" id="statDeposits">150 000 Kč</div>
-            </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Single Pokoje</span>
-                <div class="text-xl font-black text-brand-600">12 900 Kč / měs.</div>
-            </div>
-            <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <span class="text-xs font-bold text-slate-400 uppercase block mb-1">Shared Pokoje</span>
-                <div class="text-xl font-black text-brand-600">8 900 Kč / os.</div>
+
+            <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <h3 class="font-bold text-slate-900 text-sm"><i class="fa-solid fa-circle-info text-brand-600 mr-2"></i> Rychlý stav budovy Modřice</h3>
+                <p class="text-xs text-slate-600">Všechny jednotky (#11, #12, #15, #16, #17, #18 jako pevné single a #23, #24 jako shared) jsou plně pod správou. Pro úpravu údajů nacionálů nebo volání/SMS studentům využijte záložku Seznam nájemníků.</p>
             </div>
         </div>
 
-        <!-- TABULKA NÁJEMNÍKŮ & NACIONÁLŮ -->
-        <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
-            <div class="flex justify-between items-center">
-                <h2 class="font-bold text-slate-900 text-base flex items-center space-x-2">
-                    <i class="fa-solid fa-users text-brand-600"></i>
-                    <span>Seznam Ubytovaných Studentů & Pozice v Pokoje</span>
-                </h2>
-                <span class="text-xs text-slate-500 font-semibold">Aktivní správa</span>
-            </div>
+        <!-- SEKCE 2: Seznam nájemníků (Tabulka) -->
+        <div id="admin-section-tenants" class="admin-section hidden space-y-6">
+            <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <div class="flex justify-between items-center">
+                    <h2 class="font-bold text-slate-900 text-base flex items-center space-x-2">
+                        <i class="fa-solid fa-users text-brand-600"></i>
+                        <span>Seznam Ubytovaných Studentů & Nacionále (Řazeno vzestupně)</span>
+                    </h2>
+                    <span class="text-xs text-slate-500 font-semibold">Aktivní správa</span>
+                </div>
 
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-slate-600">
-                    <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
-                        <tr>
-                            <th class="p-3">Pokoj / Pozice</th>
-                            <th class="p-3">Jméno a Příjmení</th>
-                            <th class="p-3">Kontakt (Telefon / Email)</th>
-                            <th class="p-3">Rodné číslo / OP</th>
-                            <th class="p-3">Škola / Fakulta</th>
-                            <th class="p-3">Kauce</th>
-                            <th class="p-3 text-right">Akce</th>
-                        </tr>
-                    </thead>
-                    <tbody id="studentTableBody" class="divide-y divide-slate-100">
-                        <!-- Dynamicky načítaní studenti -->
-                    </tbody>
-                </table>
-            </div>
-        </section>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs text-slate-600">
+                        <thead class="bg-slate-50 text-slate-700 font-bold uppercase border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">Pokoj / Pozice</th>
+                                <th class="p-3">Jméno a Příjmení</th>
+                                <th class="p-3">Kontakt (Telefon / Email)</th>
+                                <th class="p-3">R.Č. / OP</th>
+                                <th class="p-3">Škola</th>
+                                <th class="p-3">Kauce</th>
+                                <th class="p-3 text-right">Akce</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody" class="divide-y divide-slate-100">
+                            <!-- Dynamicky načítaní studenti -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- SEKCE 3: Kauce & Platby -->
+        <div id="admin-section-finance" class="admin-section hidden space-y-6">
+            <section class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 space-y-4">
+                <h2 class="font-bold text-slate-900 text-base flex items-center space-x-2">
+                    <i class="fa-solid fa-wallet text-emerald-600"></i>
+                    <span>Přehled financí a kaucí</span>
+                </h2>
+                <p class="text-xs text-slate-600">Zde administrátor dohlíží na úhrady kaucí 15 000 Kč a stav spotřeby energií napříč všemi pokoji.</p>
+                <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 flex justify-between items-center">
+                    <div>
+                        <span class="font-bold text-slate-800 text-xs block">Celkový součet kaucí na účtu</span>
+                        <span class="text-[11px] text-slate-500">10 aktivních plateb v plné výši</span>
+                    </div>
+                    <span class="text-lg font-black text-emerald-600">150 000 Kč</span>
+                </div>
+            </section>
+        </div>
 
         <!-- MODÁLNÍ OKNO PRO ZADÁNÍ / ÚPRAVU / VYMAZÁNÍ STUDENTA -->
         <div id="studentModal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
@@ -327,18 +355,8 @@
                     <div class="grid grid-cols-2 gap-3">
                         <div>
                             <label class="block text-[11px] font-bold text-slate-600 uppercase mb-1">Číslo Pokoje / Pozice</label>
-                            <select id="formRoom" required class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
-                                <option value="Pokoj #11 (Shared - A)">Pokoj #11 (Shared - A)</option>
-                                <option value="Pokoj #11 (Shared - B)">Pokoj #11 (Shared - B)</option>
-                                <option value="Pokoj #12 (Single)">Pokoj #12 (Single)</option>
-                                <option value="Pokoj #15 (Single)">Pokoj #15 (Single)</option>
-                                <option value="Pokoj #16 (Single)">Pokoj #16 (Single)</option>
-                                <option value="Pokoj #17 (Single)">Pokoj #17 (Single)</option>
-                                <option value="Pokoj #18 (Single)">Pokoj #18 (Single)</option>
-                                <option value="Pokoj #23 (Shared - A)">Pokoj #23 (Shared - A)</option>
-                                <option value="Pokoj #23 (Shared - B)">Pokoj #23 (Shared - B)</option>
-                                <option value="Pokoj #24 (Shared - A)">Pokoj #24 (Shared - A)</option>
-                                <option value="Pokoj #24 (Shared - B)">Pokoj #24 (Shared - B)</option>
+                            <select id="formRoom" required onchange="checkRoomSelection(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 text-xs focus:outline-none focus:border-brand-600">
+                                <!-- Generováno dynamicky v JS -->
                             </select>
                         </div>
                         <div>
@@ -391,21 +409,31 @@
 
     <!-- JAVASCRIPT DATABÁZE A LOGIKA -->
     <script>
+        // Původní databáze studentů
         let students = [
-            { id: 1, room: "Pokoj #11 (Shared - A)", name: "Klára Novotná", phone: "+420 773 111 222", email: "klara.n@email.cz", idNum: "025412/1234", school: "MUNI Právnická", deposit: 15000 },
-            { id: 2, room: "Pokoj #11 (Shared - B)", name: "", phone: "", email: "", idNum: "", school: "", deposit: 0 },
-            { id: 3, room: "Pokoj #12 (Single)", name: "Tomáš Dvořák", phone: "+420 774 222 333", email: "tomas.d@email.cz", idNum: "010315/2345", school: "VUT Lékařská", deposit: 15000 },
-            { id: 4, room: "Pokoj #15 (Single)", name: "Eliška Kučerová", phone: "+420 775 333 444", email: "eliska.k@email.cz", idNum: "035108/3456", school: "MUNI Filozofická", deposit: 15000 },
-            { id: 5, room: "Pokoj #16 (Single)", name: "David Černý", phone: "+420 776 444 555", email: "david.c@email.cz", idNum: "000822/4567", school: "VUT FIT", deposit: 15000 },
-            { id: 6, room: "Pokoj #17 (Single)", name: "Adéla Veselá", phone: "+420 777 555 666", email: "adela.v@email.cz", idNum: "025919/5678", school: "MENDELU", deposit: 15000 },
-            { id: 7, room: "Pokoj #18 (Single)", name: "Filip Horák", phone: "+420 778 666 777", email: "filip.h@email.cz", idNum: "011105/6789", school: "VUT FEKT", deposit: 15000 },
-            { id: 8, room: "Pokoj #23 (Shared - A)", name: "Jan Novák", phone: "+420 779 777 888", email: "jan.novak@email.cz", idNum: "020101/7890", school: "VUT Strojní", deposit: 15000 },
-            { id: 9, room: "Pokoj #23 (Shared - B)", name: "Jakub Král", phone: "+420 770 888 999", email: "jakub.kral@email.cz", idNum: "010512/8901", school: "MUNI ESF", deposit: 15000 },
-            { id: 10, room: "Pokoj #24 (Shared - A)", name: "Martin Procházka", phone: "+420 771 999 000", email: "martin.p@email.cz", idNum: "020814/9012", school: "VUT Podnikatelská", deposit: 15000 },
-            { id: 11, room: "Pokoj #24 (Shared - B)", name: "Tereza Svobodová", phone: "+420 772 000 111", email: "tereza.s@email.cz", idNum: "035330/0123", school: "MUNI Pedagogická", deposit: 15000 }
+            { id: 1, room: "Pokoj #11", roomNum: 11, type: "Single", name: "Klára Novotná", phone: "+420773111222", email: "klara.n@email.cz", idNum: "025412/1234", school: "MUNI Právnická", deposit: 15000 },
+            { id: 2, room: "Pokoj #12", roomNum: 12, type: "Single", name: "Tomáš Dvořák", phone: "+420774222333", email: "tomas.d@email.cz", idNum: "010315/2345", school: "VUT Lékařská", deposit: 15000 },
+            { id: 3, room: "Pokoj #15", roomNum: 15, type: "Single", name: "Eliška Kučerová", phone: "+420775333444", email: "eliska.k@email.cz", idNum: "035108/3456", school: "MUNI Filozofická", deposit: 15000 },
+            { id: 4, room: "Pokoj #16", roomNum: 16, type: "Single", name: "David Černý", phone: "+420776444555", email: "david.c@email.cz", idNum: "000822/4567", school: "VUT FIT", deposit: 15000 },
+            { id: 5, room: "Pokoj #17", roomNum: 17, type: "Single", name: "Adéla Veselá", phone: "+420777555666", email: "adela.v@email.cz", idNum: "025919/5678", school: "MENDELU", deposit: 15000 },
+            { id: 6, room: "Pokoj #18", roomNum: 18, type: "Single", name: "Filip Horák", phone: "+420778666777", email: "filip.h@email.cz", idNum: "011105/6789", school: "VUT FEKT", deposit: 15000 },
+            { id: 7, room: "Pokoj #23 (A)", roomNum: 23, type: "Shared", name: "Jan Novák", phone: "+420779777888", email: "jan.novak@email.cz", idNum: "020101/7890", school: "VUT Strojní", deposit: 15000 },
+            { id: 8, room: "Pokoj #23 (B)", roomNum: 23, type: "Shared", name: "Jakub Král", phone: "+420770888999", email: "jakub.kral@email.cz", idNum: "010512/8901", school: "MUNI ESF", deposit: 15000 },
+            { id: 9, room: "Pokoj #24 (A)", roomNum: 24, type: "Shared", name: "Martin Procházka", phone: "+420771999000", email: "martin.p@email.cz", idNum: "020814/9012", school: "VUT Podnikatelská", deposit: 15000 },
+            { id: 10, room: "Pokoj #24 (B)", roomNum: 24, type: "Shared", name: "Tereza Svobodová", phone: "+420772000111", email: "tereza.s@email.cz", idNum: "035330/0123", school: "MUNI Pedagogická", deposit: 15000 }
         ];
 
-        // Přepínání záložek v mobilním zobrazení
+        // Pomocná funkce pro řazení pokojů vzestupně (2)
+        function sortStudents() {
+            students.sort((a, b) => {
+                if (a.roomNum !== b.roomNum) {
+                    return a.roomNum - b.roomNum;
+                }
+                return a.room.localeCompare(b.room);
+            });
+        }
+
+        // Přepínání mobilních záložek nájemníka
         function switchTab(tabName) {
             const sections = document.querySelectorAll('.tenant-section');
             sections.forEach(sec => sec.classList.add('hidden'));
@@ -413,7 +441,6 @@
             const target = document.getElementById(`section-${tabName}`);
             if (target) target.classList.remove('hidden');
 
-            // Aktualizace tlačítek v dolním panelu
             const navButtons = document.querySelectorAll('#mobileNavBar button');
             navButtons.forEach(btn => {
                 btn.classList.remove('text-brand-600');
@@ -427,7 +454,50 @@
             }
         }
 
+        // Přepínání sekcí v administraci (7)
+        function switchAdminTab(tabName) {
+            const sections = document.querySelectorAll('.admin-section');
+            sections.forEach(sec => sec.classList.add('hidden'));
+
+            const target = document.getElementById(`admin-section-${tabName}`);
+            if (target) target.classList.remove('hidden');
+
+            const tabBtns = document.querySelectorAll('.admin-tab-btn');
+            tabBtns.forEach(btn => {
+                btn.classList.remove('bg-brand-600', 'text-white', 'shadow-sm');
+                btn.classList.add('bg-slate-100', 'text-slate-700');
+            });
+
+            const activeBtn = document.getElementById(`admin-nav-${tabName}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-slate-100', 'text-slate-700');
+                activeBtn.classList.add('bg-brand-600', 'text-white', 'shadow-sm');
+            }
+        }
+
+        function renderRoleSelector() {
+            const selector = document.getElementById('roleSelector');
+            selector.innerHTML = `
+                <optgroup label="-- Správa Objektu --">
+                    <option value="admin">👨‍💼 SPRÁVCE / MAJITEL (ADMIN)</option>
+                </optgroup>
+                <optgroup label="-- Nájemníci --">
+                </optgroup>
+            `;
+            const optgroup = selector.querySelector('optgroup[label="-- Nájemníci --"]');
+            sortStudents();
+            students.forEach((s, idx) => {
+                if (s.name && s.name.trim() !== "") {
+                    const opt = document.createElement('option');
+                    opt.value = `student_${idx}`;
+                    opt.textContent = `${s.room} — ${s.name}`;
+                    optgroup.appendChild(opt);
+                }
+            });
+        }
+
         function renderAdminTable() {
+            sortStudents(); // Zajištění vzestupného řazení (2)
             const tbody = document.getElementById('studentTableBody');
             tbody.innerHTML = '';
 
@@ -441,6 +511,20 @@
                     totalDeposits += (s.deposit || 0);
                 }
 
+                // Tlačítka pro rychlé volání / SMS (5)
+                const contactButtons = isEmpty ? '-' : `
+                    <div class="flex items-center space-x-1 mb-1">
+                        <span class="font-medium text-slate-800">${s.phone}</span>
+                        <a href="tel:${s.phone}" class="bg-emerald-100 text-emerald-700 hover:bg-emerald-200 px-1.5 py-0.5 rounded text-[10px] font-bold" title="Zavolat">
+                            <i class="fa-solid fa-phone"></i>
+                        </a>
+                        <a href="sms:${s.phone}" class="bg-blue-100 text-blue-700 hover:bg-blue-200 px-1.5 py-0.5 rounded text-[10px] font-bold" title="Poslat SMS">
+                            <i class="fa-solid fa-comment-sms"></i>
+                        </a>
+                    </div>
+                    <div class="text-[10px] text-slate-400">${s.email}</div>
+                `;
+
                 const tr = document.createElement('tr');
                 tr.className = "hover:bg-slate-50 transition";
                 tr.innerHTML = `
@@ -448,9 +532,7 @@
                     <td class="p-3 font-bold ${isEmpty ? 'text-slate-400 italic' : 'text-brand-600'}">
                         ${isEmpty ? '[ Volné / Neobsazeno ]' : s.name}
                     </td>
-                    <td class="p-3">
-                        ${isEmpty ? '-' : `<div class="font-medium text-slate-800">${s.phone}</div><div class="text-[10px] text-slate-400">${s.email}</div>`}
-                    </td>
+                    <td class="p-3">${contactButtons}</td>
                     <td class="p-3 font-mono text-[11px]">${isEmpty ? '-' : s.idNum}</td>
                     <td class="p-3">${isEmpty ? '-' : s.school}</td>
                     <td class="p-3 font-bold text-emerald-600">${isEmpty ? '0 Kč' : s.deposit.toLocaleString('cs-CZ') + ' Kč'}</td>
@@ -468,6 +550,7 @@
 
             document.getElementById('statOccupancy').textContent = `${occupiedCount} / ${students.length} pozic`;
             document.getElementById('statDeposits').textContent = `${totalDeposits.toLocaleString('cs-CZ')} Kč`;
+            renderRoleSelector();
         }
 
         function changeUserRole(roleKey) {
@@ -483,159 +566,4 @@
             } else {
                 adminView.classList.add('hidden');
                 tenantView.classList.remove('hidden');
-                mobileNavBar.classList.remove('hidden');
-
-                const studentIndex = parseInt(roleKey.replace('student_', '')) - 1;
-                const s = students[studentIndex];
-
-                if (s) {
-                    document.getElementById('tenantNameHeader').textContent = s.name ? s.name : "[Volná pozice]";
-                    document.getElementById('tenantRoomHeader').textContent = `${s.room} • ${s.school || 'Bez přiřazení'}`;
-                    document.getElementById('tenantDepositText').textContent = `${(s.deposit || 0).toLocaleString('cs-CZ')} Kč`;
-                }
-                switchTab('guests'); // Výchozí mobilní záložka
-            }
-        }
-
-        function editStudent(id) {
-            const s = students.find(item => item.id === id);
-            if (!s) return;
-
-            document.getElementById('editStudentId').value = s.id;
-            document.getElementById('formRoom').value = s.room;
-            document.getElementById('formName').value = s.name || '';
-            document.getElementById('formPhone').value = s.phone || '';
-            document.getElementById('formEmail').value = s.email || '';
-            document.getElementById('formIdNum').value = s.idNum || '';
-            document.getElementById('formSchool').value = s.school || '';
-            document.getElementById('formDeposit').value = s.deposit || 15000;
-
-            document.getElementById('modalTitle').textContent = s.name ? `Úprava nacionálů: ${s.name}` : `Obsadit pozici: ${s.room}`;
-            document.getElementById('studentModal').classList.remove('hidden');
-        }
-
-        function openAddStudentModal() {
-            document.getElementById('editStudentId').value = '';
-            document.getElementById('formName').value = '';
-            document.getElementById('formPhone').value = '';
-            document.getElementById('formEmail').value = '';
-            document.getElementById('formIdNum').value = '';
-            document.getElementById('formSchool').value = '';
-            document.getElementById('formDeposit').value = 15000;
-            document.getElementById('modalTitle').textContent = "Přidat / Obsadit Pozici Studenta";
-            document.getElementById('studentModal').classList.remove('hidden');
-        }
-
-        function closeStudentModal() {
-            document.getElementById('studentModal').classList.add('hidden');
-        }
-
-        function deleteRow(id) {
-            if (confirm("Opravdu chcete tuto pozici/pokoj zcela odebrat z tabulky?")) {
-                students = students.filter(item => item.id !== id);
-                renderAdminTable();
-            }
-        }
-
-        function deleteStudentData() {
-            const id = parseInt(document.getElementById('editStudentId').value);
-            if (!id) {
-                closeStudentModal();
-                return;
-            }
-
-            const targetStudent = students.find(item => item.id === id);
-            if (!targetStudent) return;
-
-            if (confirm("Opravdu chcete vyčistit údaje tohoto studenta? Pozice zůstane volná.")) {
-                targetStudent.name = "";
-                targetStudent.phone = "";
-                targetStudent.email = "";
-                targetStudent.idNum = "";
-                targetStudent.school = "";
-                targetStudent.deposit = 0;
-
-                closeStudentModal();
-                renderAdminTable();
-            }
-        }
-
-        function saveStudentForm(e) {
-            e.preventDefault();
-            const id = document.getElementById('editStudentId').value;
-            const name = document.getElementById('formName').value;
-            const room = document.getElementById('formRoom').value;
-            const phone = document.getElementById('formPhone').value;
-            const email = document.getElementById('formEmail').value;
-            const idNum = document.getElementById('formIdNum').value;
-            const school = document.getElementById('formSchool').value;
-            const deposit = parseInt(document.getElementById('formDeposit').value) || 0;
-
-            if (id) {
-                const s = students.find(item => item.id === parseInt(id));
-                if (s) {
-                    s.room = room; s.name = name; s.phone = phone;
-                    s.email = email; s.idNum = idNum; s.school = school; s.deposit = deposit;
-                }
-            } else {
-                students.push({ id: Date.now(), room, name, phone, email, idNum, school, deposit });
-            }
-
-            closeStudentModal();
-            renderAdminTable();
-        }
-
-        let usedNights = 0;
-        function handleGuestSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('guestName').value;
-            const date = document.getElementById('guestDate').value;
-            usedNights++;
-
-            const isFree = usedNights <= 2;
-            const statusText = isFree ? `Noc #${usedNights} - ZDARMA` : `Nadlimit (+400 Kč/noc)`;
-            const badgeColor = isFree ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800';
-
-            const guestList = document.getElementById('guestList');
-            const newItem = document.createElement('div');
-            newItem.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center text-xs";
-            newItem.innerHTML = `
-                <div>
-                    <div class="flex items-center space-x-2">
-                        <span class="font-bold text-slate-900">${name}</span>
-                        <span class="${badgeColor} text-[10px] font-bold px-2 py-0.5 rounded">${statusText}</span>
-                    </div>
-                    <p class="text-[10px] text-slate-500">Termín: ${date} • Čeká na schválení</p>
-                </div>
-            `;
-            guestList.prepend(newItem);
-
-            const badge = document.getElementById('freeNightsBadge');
-            if (usedNights >= 2) {
-                badge.className = "bg-rose-100 text-rose-800 text-[11px] font-bold px-2.5 py-1 rounded-full";
-                badge.textContent = "Noci vyčerpány";
-            } else {
-                badge.textContent = `Zbývá ${2 - usedNights} noc ZDARMA`;
-            }
-
-            document.getElementById('guestName').value = '';
-            document.getElementById('guestDate').value = '';
-        }
-
-        function simulateOverlimit() {
-            document.getElementById('qrSection').classList.remove('hidden');
-            document.getElementById('energyPercent').textContent = "112 % limitu";
-            document.getElementById('energyBar').style.width = "100%";
-            document.getElementById('energyBar').className = "bg-rose-600 h-full rounded-full transition-all duration-500";
-        }
-
-        function handleTicketSubmit(e) {
-            e.preventDefault();
-            alert('Požadavek byl v pořádku odeslán správci objektu.');
-            document.getElementById('ticketText').value = '';
-        }
-
-        renderAdminTable();
-    </script>
-</body>
-</html>
+                mobileNavBar.classList.remove
