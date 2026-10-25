@@ -566,4 +566,215 @@
             } else {
                 adminView.classList.add('hidden');
                 tenantView.classList.remove('hidden');
-                mobileNavBar.classList.remove
+                mobileNavBar.classList.remove('hidden');
+
+                const studentIndex = parseInt(roleKey.replace('student_', ''));
+                const s = students[studentIndex];
+
+                if (s) {
+                    document.getElementById('tenantNameHeader').textContent = s.name ? s.name : "[Volná pozice]";
+                    document.getElementById('tenantRoomHeader').textContent = `${s.room} • ${s.school || 'Bez přiřazení'}`;
+                    document.getElementById('tenantDepositText').textContent = `${(s.deposit || 0).toLocaleString('cs-CZ')} Kč`;
+                }
+                switchTab('guests');
+            }
+        }
+
+        // Naplnění výběru pokoje v modálním okně (respektuje pravidlo 1 a 4)
+        function updateRoomSelectOptions(selectedRoomVal = "") {
+            const select = document.getElementById('formRoom');
+            select.innerHTML = "";
+
+            // Zamčené Single pokoje 11, 12, 15, 16, 17, 18 (1)
+            const singleRooms = [11, 12, 15, 16, 17, 18];
+            singleRooms.forEach(num => {
+                const opt = document.createElement('option');
+                opt.value = `Pokoj #${num}`;
+                opt.textContent = `Pokoj #${num} (Single)`;
+                select.appendChild(opt);
+            });
+
+            // Shared pokoje 23 a 24 s možností A/B (4)
+            [23, 24].forEach(num => {
+                const optA = document.createElement('option');
+                optA.value = `Pokoj #${num} (A)`;
+                optA.textContent = `Pokoj #${num} (Shared - A)`;
+                select.appendChild(optA);
+
+                const optB = document.createElement('option');
+                optB.value = `Pokoj #${num} (B)`;
+                optB.textContent = `Pokoj #${num} (Shared - B)`;
+                select.appendChild(optB);
+            });
+
+            if (selectedRoomVal) {
+                select.value = selectedRoomVal;
+            }
+        }
+
+        function checkRoomSelection(val) {
+            // Kontrola pro případ, kdyby uživatel chtěl přidat studenta B na single pokoj (zabráníme tomu)
+            if (val.startsWith("Pokoj #") && !val.includes("(") && [11,12,15,16,17,18].some(n => val.includes(`#${n}`))) {
+                // Pokoj je čistý Single (1)
+            }
+        }
+
+        function editStudent(id) {
+            const s = students.find(item => item.id === id);
+            if (!s) return;
+
+            document.getElementById('editStudentId').value = s.id;
+            updateRoomSelectOptions(s.room);
+            document.getElementById('formName').value = s.name || '';
+            document.getElementById('formPhone').value = s.phone || '';
+            document.getElementById('formEmail').value = s.email || '';
+            document.getElementById('formIdNum').value = s.idNum || '';
+            document.getElementById('formSchool').value = s.school || '';
+            document.getElementById('formDeposit').value = s.deposit || 15000;
+
+            document.getElementById('modalTitle').textContent = s.name ? `Úprava nacionálů: ${s.name}` : `Obsadit pozici: ${s.room}`;
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function openAddStudentModal() {
+            document.getElementById('editStudentId').value = '';
+            updateRoomSelectOptions("Pokoj #11");
+            document.getElementById('formName').value = '';
+            document.getElementById('formPhone').value = '';
+            document.getElementById('formEmail').value = '';
+            document.getElementById('formIdNum').value = '';
+            document.getElementById('formSchool').value = '';
+            document.getElementById('formDeposit').value = 15000;
+            document.getElementById('modalTitle').textContent = "Přidat / Obsadit Pozici Studenta";
+            document.getElementById('studentModal').classList.remove('hidden');
+        }
+
+        function closeStudentModal() {
+            document.getElementById('studentModal').classList.add('hidden');
+        }
+
+        function deleteRow(id) {
+            if (confirm("Opravdu chcete tuto pozici/pokoj zcela odebrat z tabulky?")) {
+                students = students.filter(item => item.id !== id);
+                renderAdminTable();
+            }
+        }
+
+        function deleteStudentData() {
+            const id = parseInt(document.getElementById('editStudentId').value);
+            if (!id) {
+                closeStudentModal();
+                return;
+            }
+
+            const targetStudent = students.find(item => item.id === id);
+            if (!targetStudent) return;
+
+            if (confirm("Opravdu chcete vyčistit údaje tohoto studenta? Pozice zůstane volná.")) {
+                targetStudent.name = "";
+                targetStudent.phone = "";
+                targetStudent.email = "";
+                targetStudent.idNum = "";
+                targetStudent.school = "";
+                targetStudent.deposit = 0;
+
+                closeStudentModal();
+                renderAdminTable();
+            }
+        }
+
+        function saveStudentForm(e) {
+            e.preventDefault();
+            const id = document.getElementById('editStudentId').value;
+            const name = document.getElementById('formName').value;
+            const room = document.getElementById('formRoom').value;
+            const phone = document.getElementById('formPhone').value;
+            const email = document.getElementById('formEmail').value;
+            const idNum = document.getElementById('formIdNum').value;
+            const school = document.getElementById('formSchool').value;
+            const deposit = parseInt(document.getElementById('formDeposit').value) || 0;
+
+            // Zjistíme číselný základ pokoje
+            let roomNum = 11;
+            const match = room.match(/\d+/);
+            if (match) roomNum = parseInt(match[0]);
+
+            let type = "Single";
+            if (room.includes("Shared") || room.includes("A") || room.includes("B")) {
+                type = "Shared";
+            }
+
+            // Pravidlo 4: Pokud jde o single pokoj, nedovolíme přidat druhého studenta jako B, ale zůstává Single
+            if ([11,12,15,16,17,18].includes(roomNum)) {
+                type = "Single";
+            }
+
+            if (id) {
+                const s = students.find(item => item.id === parseInt(id));
+                if (s) {
+                    s.room = room; s.roomNum = roomNum; s.type = type; s.name = name; s.phone = phone;
+                    s.email = email; s.idNum = idNum; s.school = school; s.deposit = deposit;
+                }
+            } else {
+                students.push({ id: Date.now(), room, roomNum, type, name, phone, email, idNum, school, deposit });
+            }
+
+            closeStudentModal();
+            renderAdminTable();
+        }
+
+        let usedNights = 0;
+        function handleGuestSubmit(e) {
+            e.preventDefault();
+            const name = document.getElementById('guestName').value;
+            const date = document.getElementById('guestDate').value;
+            usedNights++;
+
+            const isFree = usedNights <= 2;
+            const statusText = isFree ? `Noc #${usedNights} - ZDARMA` : `Nadlimit (+400 Kč/noc)`;
+            const badgeColor = isFree ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-800';
+
+            const guestList = document.getElementById('guestList');
+            const newItem = document.createElement('div');
+            newItem.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center text-xs";
+            newItem.innerHTML = `
+                <div>
+                    <div class="flex items-center space-x-2">
+                        <span class="font-bold text-slate-900">${name}</span>
+                        <span class="${badgeColor} text-[10px] font-bold px-2 py-0.5 rounded">${statusText}</span>
+                    </div>
+                    <p class="text-[10px] text-slate-500">Termín: ${date} • Čeká na schválení</p>
+                </div>
+            `;
+            guestList.prepend(newItem);
+
+            const badge = document.getElementById('freeNightsBadge');
+            if (usedNights >= 2) {
+                badge.className = "bg-rose-100 text-rose-800 text-[11px] font-bold px-2.5 py-1 rounded-full";
+                badge.textContent = "Noci vyčerpány";
+            } else {
+                badge.textContent = `Zbývá ${2 - usedNights} noc ZDARMA`;
+            }
+
+            document.getElementById('guestName').value = '';
+            document.getElementById('guestDate').value = '';
+        }
+
+        function simulateOverlimit() {
+            document.getElementById('qrSection').classList.remove('hidden');
+            document.getElementById('energyPercent').textContent = "112 % limitu";
+            document.getElementById('energyBar').style.width = "100%";
+            document.getElementById('energyBar').className = "bg-rose-600 h-full rounded-full transition-all duration-500";
+        }
+
+        function handleTicketSubmit(e) {
+            e.preventDefault();
+            alert('Požadavek byl v pořádku odeslán správci objektu.');
+            document.getElementById('ticketText').value = '';
+        }
+
+        // Inicializace při startu
+        renderAdminTable();
+    </script>
+</body>
+</html>
