@@ -339,7 +339,6 @@
 
     <!-- JAVASCRIPT DATABÁZE A LOGIKA -->
     <script>
-        // Databáze pevných pozic pokojů (včetně pokoje #11 jako Shared A/B, #12, #15, #16, #17, #18 jako Single, #23 a #24 jako Shared A/B)
         let students = [
             { id: 1, room: "Pokoj #11 (Shared - A)", name: "Klára Novotná", phone: "+420 773 111 222", email: "klara.n@email.cz", idNum: "025412/1234", school: "MUNI Právnická", deposit: 15000 },
             { id: 2, room: "Pokoj #11 (Shared - B)", name: "", phone: "", email: "", idNum: "", school: "", deposit: 0 },
@@ -390,7 +389,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Aktualizace přehledových karet
             document.getElementById('statOccupancy').textContent = `${occupiedCount} / ${students.length} pozic`;
             document.getElementById('statDeposits').textContent = `${totalDeposits.toLocaleString('cs-CZ')} Kč`;
         }
@@ -436,97 +434,4 @@
         }
 
         function openAddStudentModal() {
-            // Najde první volnou pozici nebo vytvoří novou
             document.getElementById('editStudentId').value = '';
-            document.getElementById('formName').value = '';
-            document.getElementById('formPhone').value = '';
-            document.getElementById('formEmail').value = '';
-            document.getElementById('formIdNum').value = '';
-            document.getElementById('formSchool').value = '';
-            document.getElementById('formDeposit').value = 15000;
-            document.getElementById('modalTitle').textContent = "Přidat / Obsadit Pozici Studenta";
-            document.getElementById('studentModal').classList.remove('hidden');
-        }
-
-        function closeStudentModal() {
-            document.getElementById('studentModal').classList.add('hidden');
-        }
-
-        // Funkce pro vymazání/uvolnění studenta ze slotu (pozice zůstane zachovaná)
-        function deleteStudentData() {
-            const id = document.getElementById('editStudentId').value;
-            if (!id) {
-                closeStudentModal();
-                return;
-            }
-
-            if (confirm("Opravdu chcete tohoto studenta vymazat? Pozice v pokoji zůstane volná.")) {
-                const s = students.find(item => item.id === parseInt(id));
-                if (s) {
-                    s.name = "";
-                    s.phone = "";
-                    s.email = "";
-                    s.idNum = "";
-                    s.school = "";
-                    s.deposit = 0;
-                }
-                closeStudentModal();
-                renderAdminTable();
-            }
-        }
-
-        function saveStudentForm(e) {
-            e.preventDefault();
-            const id = document.getElementById('editStudentId').value;
-            const name = document.getElementById('formName').value;
-            const room = document.getElementById('formRoom').value;
-            const phone = document.getElementById('formPhone').value;
-            const email = document.getElementById('formEmail').value;
-            const idNum = document.getElementById('formIdNum').value;
-            const school = document.getElementById('formSchool').value;
-            const deposit = parseInt(document.getElementById('formDeposit').value) || 0;
-
-            if (id) {
-                const s = students.find(item => item.id === parseInt(id));
-                if (s) {
-                    s.room = room; s.name = name; s.phone = phone;
-                    s.email = email; s.idNum = idNum; s.school = school; s.deposit = deposit;
-                }
-            } else {
-                students.push({ id: Date.now(), room, name, phone, email, idNum, school, deposit });
-            }
-
-            closeStudentModal();
-            renderAdminTable();
-        }
-
-        function handleGuestSubmit(e) {
-            e.preventDefault();
-            const name = document.getElementById('guestName').value;
-            const date = document.getElementById('guestDate').value;
-            const guestList = document.getElementById('guestList');
-            const newItem = document.createElement('div');
-            newItem.className = "bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center text-xs";
-            newItem.innerHTML = `<div><span class="font-bold text-slate-900">${name}</span><p class="text-[10px] text-slate-500">Termín: ${date}</p></div><span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded">Čeká na schválení</span>`;
-            guestList.prepend(newItem);
-            document.getElementById('guestName').value = '';
-            document.getElementById('guestDate').value = '';
-        }
-
-        function simulateOverlimit() {
-            document.getElementById('qrSection').classList.remove('hidden');
-            document.getElementById('energyPercent').textContent = "112 % limitu";
-            document.getElementById('energyBar').style.width = "100%";
-            document.getElementById('energyBar').className = "bg-rose-600 h-full rounded-full transition-all duration-500";
-        }
-
-        function handleTicketSubmit(e) {
-            e.preventDefault();
-            alert('Požadavek byl v pořádku odeslán správci objektu.');
-            document.getElementById('ticketText').value = '';
-        }
-
-        renderAdminTable();
-    </script>
-</body>
-</html>
